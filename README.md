@@ -1,44 +1,42 @@
 # YouTube Video Summarizer
 
-## Overview
-
-The YouTube Video Summarizer is a Streamlit app that uses the BART model to generate summaries from YouTube video transcripts. It allows users to input a YouTube video link, and the app retrieves the transcript, processes it, and generates a concise summary.
+A Streamlit app that summarizes YouTube videos: paste a link, and it fetches the video's transcript and asks an OpenAI model for a short summary.
 
 ## Features
 
-- Accepts YouTube video links as input.
-- Validates the link format.
-- Extracts the video ID from the link.
-- Retrieves the video transcript using the YouTube Transcript API.
-- Uses the BART model to generate a summary from the transcript.
+- Validates YouTube links (`youtube.com/watch`, `youtu.be` and embed URLs) and extracts the video ID
+- Fetches the transcript with the YouTube Transcript API
+- Summarizes the transcript with OpenAI's `gpt-3.5-turbo`
+- Shows clear errors for invalid links and videos without transcripts
 
-## Installation
+## Tech stack
 
-1. Create a virtual environment (optional but recommended):
+Python · Streamlit · OpenAI API · youtube-transcript-api
 
-    ```bash
-    python -m venv venv
-    ```
+## Getting started
 
-2. Activate the virtual environment:
-
-    ```bash
-    .\venv\Scripts\activate
-    ```
-    
-3. Install the required packages:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-## Usage
-
-Run the Streamlit app:
+Requires Python 3.9+ and an OpenAI API key.
 
 ```bash
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+echo "OPENAI_API_KEY=your-key" > .env
 cd src
-streamlit run app.py
+streamlit run streamlit.py
 ```
 
-Visit http://localhost:8501 in your web browser to use the app.
+Then open http://localhost:8501.
+
+Summaries are capped at 150 tokens, and very long videos can exceed the model's context window.
+
+## Project structure
+
+```
+src/streamlit.py    Streamlit interface
+src/Summarizer.py   Link validation, transcript retrieval and summarization
+transcript.py       Standalone example of listing and fetching transcripts
+```
+
+## Credits and license
+
+Based on [Niez Gharbi's YouTube Summariser](https://github.com/Niez-Gharbi/Youtube-Summariser), licensed under Apache 2.0 (see [LICENSE](LICENSE)). This version replaces the original local BART model (`facebook/bart-large-cnn`) with OpenAI's chat completions API and loads the API key from `.env`.
